@@ -37,36 +37,43 @@ public class SabritasDAO {
      * @param s Objeto sabritas que contiene datos a insertar
      */
     public void agregarSabritas(Sabritas s) {
-        Connection con = null;
-        PreparedStatement ps = null;
+        try (Connection con = ConexionBD.getConexion()) {
 
-        try {
-            con = ConexionBD.getConexion();
+            // 1️⃣ buscar si ya existe
+            String sqlBuscar = "SELECT id, stock FROM sabritas WHERE marca=? AND gramos=?";
+            PreparedStatement psBuscar = con.prepareStatement(sqlBuscar);
+            psBuscar.setString(1, s.getMarca());
+            psBuscar.setInt(2, s.getGramos());
 
-            String sql = "INSERT INTO sabritas (id, marca, gramos) VALUES (?, ?, ?)";
-            ps = con.prepareStatement(sql);
+            ResultSet rs = psBuscar.executeQuery();
 
-            ps.setInt(1, s.getId());
-            ps.setString(2, s.getMarca());
-            ps.setInt(3, s.getGramos());
+            if (rs.next()) {
 
-            int filas = ps.executeUpdate();
+                // 2️⃣ si existe, aumentar stock
+                int id = rs.getInt("id");
 
-            if (filas > 0) {
-                System.out.println("Agregado correctamente.");
+                String sqlUpdate = "UPDATE sabritas SET stock = stock + ? WHERE id=?";
+                PreparedStatement psUpdate = con.prepareStatement(sqlUpdate);
+                psUpdate.setInt(1, s.getStock());
+                psUpdate.setInt(2, id);
+                psUpdate.executeUpdate();
+
             } else {
-                System.out.println("No se pudo agregar.");
+
+                // 3️⃣ si no existe, insertar
+                String sqlInsert = "INSERT INTO sabritas (marca, gramos, precio, stock) VALUES (?, ?, ?, ?)";
+                PreparedStatement psInsert = con.prepareStatement(sqlInsert);
+
+                psInsert.setString(1, s.getMarca());
+                psInsert.setInt(2, s.getGramos());
+                psInsert.setDouble(3, s.getPrecio());
+                psInsert.setInt(4, s.getStock());
+
+                psInsert.executeUpdate();
             }
 
         } catch (Exception e) {
             System.out.println("Error al agregar: " + e.getMessage());
-        } finally {
-            try {
-                if (ps != null) ps.close();
-                if (con != null) con.close();
-            } catch (Exception e2) {
-                System.out.println("Error cerrando: " + e2.getMessage());
-            }
         }
     }
 /**
@@ -150,7 +157,7 @@ public class SabritasDAO {
  */    
     public List<Sabritas> obtenerTodas() throws Exception {
         List<Sabritas> lista = new ArrayList<>();
-        String sql = "SELECT id, marca, gramos FROM sabritas";
+        String sql = "SELECT id, marca, gramos, precio, stock FROM sabritas";
 
         try (Connection con = ConexionBD.getConexion();
              PreparedStatement ps = con.prepareStatement(sql);
@@ -160,7 +167,9 @@ public class SabritasDAO {
                 lista.add(new Sabritas(
                         rs.getInt("id"),
                         rs.getString("marca"),
-                        rs.getInt("gramos")
+                        rs.getInt("gramos"),
+                        rs.getDouble("precio"),
+                        rs.getInt("stock")
                 ));
             }
         }
@@ -173,7 +182,7 @@ public class SabritasDAO {
  * @throws Exception Si ocurrer errores en la cosulta
  */
     public Sabritas obtenerPorId(int idBuscar) throws Exception {
-        String sql = "SELECT id, marca, gramos FROM sabritas WHERE id = ?";
+        String sql = "SELECT id, marca, gramos, precio, stock FROM sabritas WHERE id = ?";
 
         try (Connection con = ConexionBD.getConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -185,7 +194,9 @@ public class SabritasDAO {
                     return new Sabritas(
                             rs.getInt("id"),
                             rs.getString("marca"),
-                            rs.getInt("gramos")
+                            rs.getInt("gramos"),
+                            rs.getDouble("precio"),
+                            rs.getInt("stock")
                     );
                 }
             }
@@ -208,6 +219,31 @@ public class SabritasDAO {
             return ps.executeUpdate() > 0;
         }
     }
+    public boolean venderSabritas(int idProducto, int cantidadVendida) throws Exception{
+        String sqlBuscar = "SELECT stock FROM sabritas WHERE id = ?";
+        String sqlActualizar = "UPDATE sabritas SET stock = stock - ? WHERE id = ?";
+        
+        try(Connection con = ConexionBD.getConexion();
+                PreparedStatement psBuscar = con.prepareStatement(sqlBuscar)){
+            psBuscar.setInt(1, idProducto);
+            
+            try(ResultSet rs = psBuscar.executeQuery()){
+                if(!rs.next()){
+                    return false;
+                }
+                int stockActual = rs.getInt("stock");
+                if(stockActual < cantidadVendida){
+                    return false;
+                }
+            }
+            try(PreparedStatement psActualizar = con.prepareStatement(sqlActualizar)){
+                psActualizar.setInt(1, cantidadVendida);
+                psActualizar.setInt(2, idProducto);
+                return psActualizar.executeUpdate() > 0;
+            }
+        }
+        
+    }
     
     
     /**
@@ -217,14 +253,16 @@ public class SabritasDAO {
      * @throws Exception Si ocurre error en la operacion
      */
     public boolean editarPorId(Sabritas s) throws Exception {
-    String sql = "UPDATE sabritas SET marca=?, gramos=? WHERE id=?";
+    String sql = "UPDATE sabritas SET marca = ?, gramos = ?, precio = ?, stock = ? WHERE id = ?";
 
     try (Connection con = ConexionBD.getConexion();
          PreparedStatement ps = con.prepareStatement(sql)) {
 
         ps.setString(1, s.getMarca());
         ps.setInt(2, s.getGramos());
-        ps.setInt(3, s.getId());
+        ps.setDouble(3, s.getPrecio());
+        ps.setInt(4, s.getStock());
+        ps.setInt(5, s.getId());
 
         return ps.executeUpdate() > 0;
     }

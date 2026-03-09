@@ -23,11 +23,15 @@ public class PrimaryController {
     @FXML private TextField txtId;
     @FXML private TextField txtMarca;
     @FXML private TextField txtGramos;
+    @FXML private TextField txtPrecio;
+    @FXML private TextField txtStock;
 
     @FXML private TableView<Sabritas> tabla;
     @FXML private TableColumn<Sabritas, Integer> colId;
     @FXML private TableColumn<Sabritas, String> colMarca;
     @FXML private TableColumn<Sabritas, Integer> colGramos;
+    @FXML private TableColumn<Sabritas, Double> colPrecio;
+    @FXML private TableColumn<Sabritas, Integer> colStock;
 
     @FXML private Label lblEstado;
 
@@ -43,6 +47,8 @@ public class PrimaryController {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colMarca.setCellValueFactory(new PropertyValueFactory<>("marca"));
         colGramos.setCellValueFactory(new PropertyValueFactory<>("gramos"));
+        colPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
+        colStock.setCellValueFactory(new PropertyValueFactory<>("stock"));
         tabla.setItems(data);
 
         // Carga inicial para probar conexión
@@ -73,8 +79,15 @@ public class PrimaryController {
             int id = Integer.parseInt(txtId.getText().trim());
             String marca = txtMarca.getText().trim();
             int gramos = Integer.parseInt(txtGramos.getText().trim());
+            double precio = Double.parseDouble(txtPrecio.getText().trim());
+            int stock = Integer.parseInt(txtStock.getText().trim());
+            
+            if(marca.isEmpty()){
+                info("Agregar", "La marca no puede ir vacía.");
+                return;
+            }
 
-            dao.agregarSabritas(new Sabritas(id, marca, gramos));
+            dao.agregarSabritas(new Sabritas(0, marca, gramos, precio, stock));
             lblEstado.setText("Estado: agregado ");
             limpiar();
             refrescarTabla();
@@ -85,9 +98,6 @@ public class PrimaryController {
         }
     }
 
- 
-   
-   
 /**
  * Evento que elimina productos del inventario.
  */
@@ -119,6 +129,8 @@ public class PrimaryController {
         txtId.clear();
         txtMarca.clear();
         txtGramos.clear();
+        txtPrecio.clear();
+        txtStock.clear();
     }
 
     /**
@@ -154,10 +166,15 @@ private void onCerrarSesion() {
         lblEstado.setText("Error: " + e.getMessage());
     }
 }
-
-
-
-
+    @FXML
+    private void onAbrirVentas() {
+        try {
+            App.setRoot("venta");
+        } catch (Exception e) {
+            lblEstado.setText("Estado: error al abrir ventas");
+            error("No se pudo abrir la ventana de ventas", e.getMessage());
+        }
+    }
 
 /**
  * Evento que edita un producto del inventario.
@@ -168,13 +185,16 @@ private void onEditar() {
         int id = Integer.parseInt(txtId.getText().trim());
         String marca = txtMarca.getText().trim();
         int gramos = Integer.parseInt(txtGramos.getText().trim());
+        double precio = Double.parseDouble(txtPrecio.getText().trim());
+        int stock = Integer.parseInt(txtStock.getText().trim());
+
 
         if (marca.isEmpty()) {
             info("Editar", "La marca no puede ir vacía.");
             return;
         }
 
-        boolean ok = dao.editarPorId(new Sabritas(id, marca, gramos));
+        boolean ok = dao.editarPorId(new Sabritas(id, marca, gramos, precio, stock));
 
         if (ok) {
             lblEstado.setText("Estado: editado ✅");

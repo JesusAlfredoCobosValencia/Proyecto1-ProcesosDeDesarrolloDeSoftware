@@ -24,6 +24,8 @@ public class Sabritas {
     private int id;
     private String marca;
     private int gramos;
+    private double precio;
+    private int stock;
 
     /**
      * Constructor vacio que permite crear un objeto sabritas sin ningun atributo.
@@ -37,10 +39,12 @@ public class Sabritas {
      * @param marca Marca del producto
      * @param gramos Cantidad en gramos del producto
      */
-    public Sabritas(int id, String marca, int gramos) {
+    public Sabritas(int id, String marca, int gramos, double precio, int stock) {
         this.id = id;
         this.marca = marca;
         this.gramos = gramos;
+        this.precio = precio;
+        this.stock = stock;
     }
 
     /**
@@ -91,12 +95,29 @@ public class Sabritas {
         this.gramos = gramos;
     }
 
+    public double getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(double precio) {
+        this.precio = precio;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+    
+
     /**
      * Devuelve la representacion del objeto enm texto
      * @return Cadena de datos del producto.
      */
     @Override
     public String toString() {
-        return "Sabritas { id=" + id + ", marca='" + marca + "', gramos=" + gramos + " }";
+        return "Sabritas { id=" + id + ", marca='" + marca + "', gramos=" + gramos +", precio =" + precio + ", stock =" + stock + "}";
     }
 }
