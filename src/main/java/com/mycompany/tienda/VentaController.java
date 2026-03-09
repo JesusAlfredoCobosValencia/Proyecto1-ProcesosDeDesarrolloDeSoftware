@@ -66,23 +66,27 @@ public class VentaController {
      * Inicializa la vista y configura las tablas.
      */
     @FXML
-    public void initialize() {
-        colIdProducto.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colMarcaProducto.setCellValueFactory(new PropertyValueFactory<>("marca"));
-        colGramosProducto.setCellValueFactory(new PropertyValueFactory<>("gramos"));
-        colPrecioProducto.setCellValueFactory(new PropertyValueFactory<>("precio"));
-        colStockProducto.setCellValueFactory(new PropertyValueFactory<>("stock"));
+    public void initialize(){
+	colIdProducto.setCellValueFactory(new PropertyValueFactory<>("id"));
+	colMarcaProducto.setCellValueFactory(new PropertyValueFactory<>("marca"));
+	colGramosProducto.setCellValueFactory(new PropertyValueFactory<>("gramos"));
+	colPrecioProducto.setCellValueFactory(new PropertyValueFactory<>("precio"));
+	colStockProducto.setCellValueFactory(new PropertyValueFactory<>("stock"));
 
-        colMarcaCarrito.setCellValueFactory(new PropertyValueFactory<>("marca"));
-        colCantidadCarrito.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
-        colPrecioUnitarioCarrito.setCellValueFactory(new PropertyValueFactory<>("precioUnitario"));
-        colSubtotalCarrito.setCellValueFactory(new PropertyValueFactory<>("subtotal"));
+	colMarcaCarrito.setCellValueFactory(new PropertyValueFactory<>("marca"));
+	colCantidadCarrito.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
+	colPrecioUnitarioCarrito.setCellValueFactory(new PropertyValueFactory<>("precioUnitario"));
+	colSubtotalCarrito.setCellValueFactory(new PropertyValueFactory<>("subtotal"));
 
-        tablaProductos.setItems(inventario);
-        tablaCarrito.setItems(carrito);
+	tablaProductos.setItems(inventario);
+	tablaCarrito.setItems(carrito);
 
-        refrescarInventario();
-        actualizarTotal();
+	tablaProductos.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+	tablaCarrito.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+	refrescarInventario();
+	actualizarTotal();
     }
 
     /**

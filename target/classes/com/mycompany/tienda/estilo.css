@@ -28,6 +28,19 @@
     -fx-background-radius: 6;
 }
 
+.title-venta{
+    -fx-background-color: #E10600;
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-alignment: center;
+    -fx-border-color: #FFD200;
+    -fx-border-width: 3;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
 .input{
     -fx-background-color: white;
     -fx-border-color: #D9D9D9;
