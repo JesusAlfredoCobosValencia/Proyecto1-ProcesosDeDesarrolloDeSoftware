@@ -1,0 +1,70 @@
+.root{
+    -fx-background-color: #F4F4F4;
+}
+
+.card{
+    -fx-background-color: white;
+
+    -fx-border-color: #F39C12;
+    -fx-border-width: 5;
+
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+
+    -fx-padding: 0;
+}
+
+.title{
+    -fx-background-color: #E10600;
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-padding: 16;
+    -fx-alignment: center;
+
+    -fx-border-color: #FFD200;
+    -fx-border-width: 3;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.input{
+    -fx-background-color: white;
+    -fx-border-color: #D9D9D9;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 8;
+}
+
+.btn{
+    -fx-background-color: #F39C12;
+    -fx-text-fill: #111;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+    -fx-padding: 10 22;
+}
+
+.btn:hover{
+    -fx-background-color: #D98200;
+}
+
+.btn-danger{
+    -fx-background-color: #E10600;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+    -fx-padding: 10 22;
+}
+
+.table-view{
+    -fx-border-color: #D9D9D9;
+}
+
+.table-view .column-header{
+    -fx-background-color: #F39C12;
+}
+
+.table-view .column-header .label{
+    -fx-text-fill: #111;
+    -fx-font-weight: bold;
+}
